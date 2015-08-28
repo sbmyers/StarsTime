@@ -86,4 +86,5 @@ Schedule1516[]={
 		{1459713600,"DAL","ANA"},	// DAL at ANA Apr 3, 2016 8:00
 		{1460057400,"COL","DAL"},	// COL at DAL Apr 7, 2016 7:30
 		{1460228400,"NSH","DAL"},	// NSH at DAL Apr 9, 2016 7:00
+    {2000000000,"   ", "  "}, // end marker
 };
