@@ -4,7 +4,7 @@ struct{
   char *home;
 }
 Schedule1516[]={
-		{1444332600,"PIT","DAL"},	// PIT at DAL Oct 8, 2015 7:3077
+		{1444332600,"PIT","DAL"},	// PIT at DAL Oct 8, 2015 7:30
 		{1444507200,"DAL","COL"},	// DAL at COL Oct 10, 2015 8:00
 		{1444764600,"EDM","DAL"},	// EDM at DAL Oct 13, 2015 7:30
 		{1444933800,"DAL","TB"},	// DAL at TB Oct 15, 2015 6:30
