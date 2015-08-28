@@ -1,0 +1,28 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "s.myers@computer.org",
+    "longName": "Stars",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/StarsBW.png",
+                "name": "STARS_ICON",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Stars",
+    "targetPlatforms": [
+        "basalt"
+    ],
+    "uuid": "0e3a1f6c-2f2b-4cb4-b8d6-41f1f063f15e",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
