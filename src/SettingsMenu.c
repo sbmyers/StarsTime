@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include "SettingsMenu.h"
-
+#include "Schedule.h"
+#include "TODMenu.h"
+#include "TimeSelector.h"
 
 static Window *window;
 static void window_unload(Window *window);
@@ -46,8 +48,23 @@ void up_single_click_handler(ClickRecognizerRef recognizer, void *context)
 void select_single_click_handler(ClickRecognizerRef recognizer, void *context)
 {
 	//. called on single click ...
-
-	//Window *window = (Window *)context;
+  switch(nActiveLine){
+    case 0:  // Sunday
+    {
+      short times[]={500, 700,};
+      ShowTODMenu("Sunday", times, (int)sizeof(times)/sizeof(times[0]),Sunday1st, SundayLast);
+    }
+    break;
+    case 1:  // Weekday
+      ShowTimeSelect("Weekday", 730,WeekDay730);
+    break;
+    case 2:  // Saturday
+    {   
+      short times[]={200, 300, 600, 700, 800, };
+      ShowTODMenu("Saturday", times, (int)sizeof(times)/sizeof(times[0]), Saturday1st, SaturdayLast);
+    }
+    break;
+  }
 }
 
 void down_single_click_handler(ClickRecognizerRef recognizer, void *context)

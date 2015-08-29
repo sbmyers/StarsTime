@@ -83,35 +83,19 @@ static void hands_update_proc(Layer *layer, GContext *ctx)
 }
 static void ShowGameInfo() 
 {
-  int nGame = 0;
-  bool bToday = false;
-#if 0
-	if (++nGameIndex > (int)(sizeof(Schedule1516) / sizeof(Schedule1516[0]))) {
-		nGameIndex = 0;
-	}
-  nGame = nGameIndex;
-  bToday = (nGameIndex & 1) == 0;
-#else
-  time_t now = time(NULL);
-	struct tm *currentTime = gmtime(&now);
-  while(Schedule1516[nGame].start < now){
-    nGame++;
-  }
-	struct tm *startTime = gmtime(&Schedule1516[nGame].start);
-  if((startTime->tm_mon == currentTime->tm_mon) && (startTime->tm_mday == currentTime->tm_mday)){
-    bToday = true;
-  }
-#endif
-	if (strncmp("DAL", Schedule1516[nGame].visitor, 3)) {
-		strncpy(s_Opponent_buffer, Schedule1516[nGame].visitor, sizeof(s_Opponent_buffer));
+  GameInfo *game = FindGameTime();
+	struct tm *startTime = gmtime(&game->start);
+
+	if (strncmp("DAL", game->visitor, 3)) {
+		strncpy(s_Opponent_buffer, game->visitor, sizeof(s_Opponent_buffer));
 		strncpy(s_Road_buffer, " ", sizeof(s_Road_buffer));
 	}
 	else {
 		strncpy(s_Opponent_buffer, " ", sizeof(s_Opponent_buffer));
-		strncpy(s_Road_buffer, Schedule1516[nGame].home, sizeof(s_Road_buffer));
+		strncpy(s_Road_buffer, game->home, sizeof(s_Road_buffer));
 	}
 	strftime(s_GameTime_buffer, sizeof(s_GameTime_buffer), "%l:%M", startTime);
-	if (bToday) {
+	if (IsToday()) {
 		text_layer_set_text_color(s_RoadLabel, GColorPastelYellow);
 		text_layer_set_text_color(s_OpponentLabel, GColorPastelYellow);
 	}
