@@ -4,6 +4,13 @@ struct{
   char *home;
 }
 Schedule1516[]={
+  	{1442946600,"DAL","FLA"},	// DAL at FLA Sep 22, 2015 6:30
+		{1443121200,"DAL","STL"},	// DAL at STL Sep 24, 2015 7:00
+		{1443294000,"TB","DAL"},	// TB at DAL Sep 26, 2015 7:00
+		{1443380400,"FLA","DAL"},	// FLA at DAL Sep 27, 2015 7:00
+		{1443555000,"STL","DAL"},	// STL at DAL Sep 29, 2015 7:30
+		{1443724200,"DAL","TB"},	// DAL at TB Oct 1, 2015 6:30
+		{1443900600,"DAL","CHI"},	// DAL at CHI Oct 3, 2015 7:30
 		{1444332600,"PIT","DAL"},	// PIT at DAL Oct 8, 2015 7:30
 		{1444507200,"DAL","COL"},	// DAL at COL Oct 10, 2015 8:00
 		{1444764600,"EDM","DAL"},	// EDM at DAL Oct 13, 2015 7:30
