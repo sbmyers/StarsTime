@@ -2,6 +2,7 @@
 
 #include "pebble.h"
 #include "Schedule.h"
+#include "SettingsMenu.h"
 
 static Window *window;
 static Layer *s_simple_bg_layer, *s_date_layer, *s_hands_layer;
@@ -18,10 +19,10 @@ static char s_GameTime_buffer[6];
 static char s_Road_buffer[4];
 static GPath *Star[4];
 static GPath *HiLites[6];
-static int nGameIndex = 0;
 static void ShowGameInfo();
 
-static void bg_update_proc(Layer *layer, GContext *ctx) {
+static void bg_update_proc(Layer *layer, GContext *ctx) 
+{
 	graphics_context_set_fill_color(ctx, GColorKellyGreen);
 	graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
 	graphics_context_set_fill_color(ctx, GColorWhite);
@@ -47,7 +48,8 @@ static void bg_update_proc(Layer *layer, GContext *ctx) {
 	}
 }
 
-static void hands_update_proc(Layer *layer, GContext *ctx) {
+static void hands_update_proc(Layer *layer, GContext *ctx)
+{
 	GRect bounds = layer_get_bounds(layer);
 	GPoint center = grect_center_point(&bounds);
 	int16_t second_hand_length = bounds.size.w / 2;
@@ -79,7 +81,8 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
 	graphics_fill_rect(ctx, GRect(bounds.size.w / 2 - 1, bounds.size.h / 2 - 1, 3, 3), 0, GCornerNone);
   ShowGameInfo();
 }
-static void ShowGameInfo() {
+static void ShowGameInfo() 
+{
   int nGame = 0;
   bool bToday = false;
 #if 0
@@ -117,7 +120,8 @@ static void ShowGameInfo() {
 		text_layer_set_text_color(s_OpponentLabel, GColorMediumAquamarine);
 	}
 }
-static void date_update_proc(Layer *layer, GContext *ctx) {
+static void date_update_proc(Layer *layer, GContext *ctx) 
+{
 	time_t now = time(NULL);
 	struct tm *t = localtime(&now);
 
@@ -125,11 +129,13 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
 	text_layer_set_text(s_num_label, s_num_buffer);
 }
 
-static void handle_second_tick(struct tm *tick_time, TimeUnits units_changed) {
+static void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)
+{
 	layer_mark_dirty(window_get_root_layer(window));
 }
 
-static void window_load(Window *window) {
+static void window_load(Window *window) 
+{
 	Layer *window_layer = window_get_root_layer(window);
 	GRect bounds = layer_get_bounds(window_layer);
 
@@ -178,7 +184,8 @@ static void window_load(Window *window) {
 	layer_add_child(window_layer, s_hands_layer);
 }
 
-static void window_unload(Window *window) {
+static void window_unload(Window *window) 
+{
 	layer_destroy(s_simple_bg_layer);
 	layer_destroy(s_date_layer);
 
@@ -188,14 +195,36 @@ static void window_unload(Window *window) {
 
 	layer_destroy(s_hands_layer);
 }
+static void select_single_click_handler(ClickRecognizerRef recognizer, void *context) 
+{
+  //. called on single click ...
+  StartSettingsMenu();
+  //Window *window = (Window *)context;
+}
 
-static void init() {
+static void config_provider(Window *window) 
+{
+ // single click / repeat-on-hold config:
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
+//  window_single_repeating_click_subscribe(BUTTON_ID_SELECT, 1000, select_single_click_handler);
+
+  // multi click config:
+//  window_multi_click_subscribe(BUTTON_ID_SELECT, 2, 10, 0, true, select_multi_click_handler);
+
+  // long click config:
+//  window_long_click_subscribe(BUTTON_ID_SELECT, 700, select_long_click_handler, select_long_click_release_handler);
+}
+
+static void init() 
+{
 	window = window_create();
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,
 			.unload = window_unload,
 	});
 	window_stack_push(window, true);
+	// Init controls
+	window_set_click_config_provider(window, (ClickConfigProvider) config_provider);
 
 	s_day_buffer[0] = '\0';
 	s_num_buffer[0] = '\0';
@@ -224,7 +253,8 @@ static void init() {
 	tick_timer_service_subscribe(SECOND_UNIT, handle_second_tick);
 }
 
-static void deinit() {
+static void deinit() 
+{
 	gpath_destroy(s_minute_arrow);
 	gpath_destroy(s_hour_arrow);
 
@@ -239,7 +269,8 @@ static void deinit() {
 	window_destroy(window);
 }
 
-int main() {
+int main()
+{
 	init();
 	app_event_loop();
 	deinit();

@@ -95,3 +95,16 @@ Schedule1516[]={
 		{1460228400,"NSH","DAL"},	// NSH at DAL Apr 9, 2016 7:00
     {2000000000,"   ", "  "}, // end marker
 };
+//
+// Saturday start times
+// 2
+// 3
+// 6
+// 7
+// 8
+	
+// Sunday start times	
+// 5
+// 7
+	
+//Weekday	7:30
