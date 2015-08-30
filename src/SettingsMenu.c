@@ -54,7 +54,7 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
     case 0:  // Sunday
     {
       short times[]={500, 700,};
-      ShowTODMenu("Sunday", times, (int)sizeof(times)/sizeof(times[0]),Sunday1st, SundayLast);
+      ShowTODMenu("Sunday", times, (int)sizeof(times)/sizeof(times[0]),Sunday1st);
     }
     break;
     case 1:  // Weekday
@@ -63,7 +63,7 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
     case 2:  // Saturday
     {   
       short times[]={200, 300, 600, 700, 800, };
-      ShowTODMenu("Saturday", times, (int)sizeof(times)/sizeof(times[0]), Saturday1st, SaturdayLast);
+      ShowTODMenu("Saturday", times, (int)sizeof(times)/sizeof(times[0]), Saturday1st);
     }
     break;
   }
