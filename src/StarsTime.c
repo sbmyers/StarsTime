@@ -21,6 +21,8 @@ static GPath *Star[4];
 static GPath *HiLites[6];
 static void ShowGameInfo();
 
+void TreMenu();
+
 static void bg_update_proc(Layer *layer, GContext *ctx) 
 {
 	graphics_context_set_fill_color(ctx, GColorKellyGreen);
@@ -181,8 +183,12 @@ static void window_unload(Window *window)
 }
 static void select_single_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
+#if 01
+  TreMenu();
+#else
   //. called on single click ...
   StartSettingsMenu();
+#endif
   //Window *window = (Window *)context;
 }
 
