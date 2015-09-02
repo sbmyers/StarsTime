@@ -10,7 +10,10 @@ static TextLayer *s_textlayer_subtitle;
 static TextLayer *s_textlayer_time;
 static TextLayer *s_textlayer_desc;
 static TextLayer *s_textlayer_destination;
-static Layer *s_Caller;
+
+static GColor s_HiLiteColor;
+static bool s_bHiLite = true;
+static Layer *s_hilite;
 
 static char s_Destination[4];
 static char s_Station[16];
@@ -18,6 +21,10 @@ static char s_DayOfWeek[10];
 static char s_time[6];
 static short s_activeDigit = 0;
 static uint32_t s_key = 0;
+
+static AppTimer *s_AppTimer = NULL;
+
+static GRect s_grDigits[4];
 
 static void up_single_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
@@ -42,7 +49,7 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
       s_activeDigit = 0;
       break;
   }
-
+  layer_mark_dirty(s_hilite);
 }
 
 static void down_single_click_handler(ClickRecognizerRef recognizer, void *context) 
@@ -59,6 +66,27 @@ static void config_provider(Window *window)
   window_single_click_subscribe(BUTTON_ID_UP, up_single_click_handler);
   window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_single_click_handler);
+}
+
+static void hilite_update(struct Layer *layer, GContext *ctx)
+{
+  GRect grect = layer_get_bounds(layer);
+  graphics_context_set_fill_color(ctx, GColorWhite);
+  graphics_fill_rect(ctx, grect, 0, GCornerNone);
+  graphics_context_set_fill_color(ctx, s_HiLiteColor);
+  graphics_fill_rect(ctx, s_grDigits[s_activeDigit], 0, GCornerNone);
+}
+static void AppTimerProc(void *pData)
+{
+  if(s_bHiLite){
+    s_HiLiteColor = GColorDarkGray;
+  } 
+  else{
+    s_HiLiteColor = GColorLightGray;
+  }
+  s_bHiLite = !s_bHiLite;
+  layer_mark_dirty(s_hilite);
+  app_timer_reschedule(s_AppTimer, 500);
 }
 static void initialise_ui(void) {
   s_window = window_create();
@@ -87,9 +115,14 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(s_textlayer_destination, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_destination);
   
+  s_hilite = layer_create(GRect(34, 63, 100, 39));
+  layer_set_update_proc(s_hilite, hilite_update);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_hilite);
+  
   // s_textlayer_time
-  s_textlayer_time = text_layer_create(GRect(13, 51, 119, 51));
+  s_textlayer_time = text_layer_create(GRect(34, 51, 100, 51));
   text_layer_set_text(s_textlayer_time, s_time);
+  text_layer_set_background_color(s_textlayer_time, GColorClear);
   text_layer_set_text_alignment(s_textlayer_time, GTextAlignmentRight);
   text_layer_set_font(s_textlayer_time, s_res_bitham_42_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_time);
@@ -100,28 +133,29 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(s_textlayer_desc, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_desc, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_desc);
+  s_AppTimer = app_timer_register(500, AppTimerProc, NULL);
 }
 
 static void destroy_ui(void) {
   
   int nresult = ((s_time[0]-'0')*100)  + ((s_time[2]-'0')*10) + (s_time[3]-'0');
   persist_write_int(s_key, nresult);
-  layer_mark_dirty(s_Caller);
   
+  app_timer_cancel(s_AppTimer);
   window_destroy(s_window);
   text_layer_destroy(s_textlayer_title);
   text_layer_destroy(s_textlayer_subtitle);
   text_layer_destroy(s_textlayer_time);
   text_layer_destroy(s_textlayer_desc);
   text_layer_destroy(s_textlayer_destination);
+  layer_destroy(s_hilite);
 }
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
-void show_adjust_time(const char *destination, const char *dayofweek, const char * station, uint32_t key, Layer *caller)
+void show_adjust_time(const char *destination, const char *dayofweek, const char * station, uint32_t key)
 {
-  s_Caller = caller;
   strncpy(s_Destination, destination,sizeof(s_Destination));
   strncpy(s_Station, station,sizeof(s_Station));
   strncpy(s_DayOfWeek, dayofweek,sizeof(s_DayOfWeek));
@@ -133,6 +167,10 @@ void show_adjust_time(const char *destination, const char *dayofweek, const char
   s_time[2] = work[1];
   s_time[3] = work[2];
   s_time[4] = '\0';
+  
+  s_grDigits[0] = GRect(4, 0, 24, 39);
+  s_grDigits[2] = GRect(46, 0, 24, 39);
+  s_grDigits[3] = GRect(74, 0, 24, 39);
   
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {

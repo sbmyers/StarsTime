@@ -36,13 +36,13 @@ static void menu_select_callback(int index, void *ctx) {
   persist_write_int(skStation, nStation);
   switch(index){
     case 0:  // Sunday
-      show_adjust_time("", "Sundays", "AAC", skTravelTimeSunday, simple_menu_layer_get_layer(s_simple_menu_layer));
+      show_adjust_time("", "Sundays", "AAC", skTravelTimeSunday);
     break;
     case 1:  // Weekday
-      show_adjust_time("TRE", "Weekdays", Title, skTravelTimeWeekDay, simple_menu_layer_get_layer(s_simple_menu_layer));
+      show_adjust_time("TRE", "Weekdays", Title, skTravelTimeWeekDay);
     break;
     case 2:  // Saturday
-      show_adjust_time("TRE", "Saturdays", Title, skTravelTimeSaturday, simple_menu_layer_get_layer(s_simple_menu_layer));
+      show_adjust_time("TRE", "Saturdays", Title, skTravelTimeSaturday);
     break;
   }
 	layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
