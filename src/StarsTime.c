@@ -1,6 +1,7 @@
 #include "simple_analog.h"
 
 #include "pebble.h"
+#include "StarsTime.h"
 #include "Schedule.h"
 #include "SettingsMenu.h"
 
