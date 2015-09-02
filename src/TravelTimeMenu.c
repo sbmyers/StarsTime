@@ -30,19 +30,19 @@ static SimpleMenuItem s_first_menu_items[] = {
 static const int numMenuItems = (sizeof(s_first_menu_items) / sizeof(s_first_menu_items[0]));
 static char Title[30];
 //static GBitmap *s_menu_icon_image;
-void show_adjust_time(const char *destination, const char *station, const char *dayofweek);
+
 static void menu_select_callback(int index, void *ctx) {
   nStation = index;
   persist_write_int(skStation, nStation);
   switch(index){
     case 0:  // Sunday
-      show_adjust_time("", "Sundays", "AAC");
+      show_adjust_time("", "Sundays", "AAC", skTravelTimeSunday, simple_menu_layer_get_layer(s_simple_menu_layer));
     break;
     case 1:  // Weekday
-      show_adjust_time("TRE", "Weekdays", Title);
+      show_adjust_time("TRE", "Weekdays", Title, skTravelTimeWeekDay, simple_menu_layer_get_layer(s_simple_menu_layer));
     break;
     case 2:  // Saturday
-      show_adjust_time("TRE", "Saturdays", Title);
+      show_adjust_time("TRE", "Saturdays", Title, skTravelTimeSaturday, simple_menu_layer_get_layer(s_simple_menu_layer));
     break;
   }
 	layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
@@ -72,21 +72,24 @@ static void main_window_unload(Window *window) {
 	simple_menu_layer_destroy(s_simple_menu_layer);
 	//  gbitmap_destroy(s_menu_icon_image);
 }
-
-void TravelTimeMenu(const char *title)
-{
-  strncpy(Title, title,sizeof(Title));
+static void main_window_appear(Window *window){
   s_nSunday = persist_read_int(skTravelTimeSunday);
   snprintf(sundaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSunday);
   s_nWeekday = persist_read_int(skTravelTimeWeekDay);
   snprintf(weekdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nWeekday);
   s_nSaturdayday = persist_read_int(skTravelTimeSaturday);
   snprintf(saturdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSaturdayday);
+}
+void TravelTimeMenu(const char *title)
+{
+  strncpy(Title, title,sizeof(Title));
+  main_window_appear(NULL);
   
 	s_main_window = window_create();
 	window_set_window_handlers(s_main_window, (WindowHandlers) {
 		.load = main_window_load,
 		.unload = main_window_unload,
+    .appear = main_window_appear,
 	});
 	window_stack_push(s_main_window, true);
 }
