@@ -1,12 +1,14 @@
 #include "pebble.h"
 #include "StarsTime.h"
-#include "TravelTimeMenu.h"
 
 #define NUM_MENU_SECTIONS 1
   
 static int nStation = 0;
 static void menu_select_callback(int index, void *ctx);
-
+static int s_nSunday = 0;
+static int s_nWeekday = 0;
+static int s_nSaturdayday = 0;
+  
 typedef struct {
 	char *title;
 	SimpleMenuLayerSelectCallback callback;
@@ -14,30 +16,27 @@ typedef struct {
 static Window *s_main_window;
 static SimpleMenuLayer *s_simple_menu_layer;
 static SimpleMenuSection s_menu_sections[NUM_MENU_SECTIONS];
+
+static char sundaySubTitle[30];
+static char weekdaySubTitle[30];
+static char saturdaySubTitle[30];
 static SimpleMenuItem s_first_menu_items[] = {
-	{ "T&P Station", NULL, NULL, menu_select_callback },     // 0
-	{ "Ft Worth ITC", NULL, NULL, menu_select_callback },    // 1
-	{ "Richland Hills", NULL, NULL, menu_select_callback },  // 2
-	{ "Bell", NULL, NULL, menu_select_callback },            // 3
-	{ "Centerpoint DFW", NULL, NULL, menu_select_callback }, // 4
-	{ "West Irving", NULL, NULL, menu_select_callback },      // 5
-	{ "Downtown Irving", NULL, NULL, menu_select_callback },  // 6
-	{ "Medical Market", NULL, NULL, menu_select_callback },  // 7
+	{ "Sundays", sundaySubTitle, NULL, menu_select_callback },    // 0
+	{ "Weekday", weekdaySubTitle, NULL, menu_select_callback },    // 1
+	{ "Saturdays", saturdaySubTitle, NULL, menu_select_callback },  // 2
 };
 static const int numMenuItems = (sizeof(s_first_menu_items) / sizeof(s_first_menu_items[0]));
+static char Title[30];
 //static GBitmap *s_menu_icon_image;
 static void SetSubTitles()
 {
-  for(int i = 0; i < numMenuItems; ++i){
-    s_first_menu_items[i].subtitle = (nStation == i) ? "Selected Station" : NULL;
-  }
+ 
 }
 static void menu_select_callback(int index, void *ctx) {
   nStation = index;
   persist_write_int(skStation, nStation);
   SetSubTitles();
   //ShowTimeSelect(s_first_menu_items[nStation].title, 0, skSpare);
-  TravelTimeMenu(s_first_menu_items[nStation].title);
 	layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
 }
 
@@ -50,6 +49,7 @@ static void main_window_load(Window *window) {
 	s_menu_sections[0] = (SimpleMenuSection) {
 		.num_items = numMenuItems,
 		.items = s_first_menu_items,
+    .title = Title,
 	};
 
 	Layer *window_layer = window_get_root_layer(window);
@@ -66,8 +66,16 @@ static void main_window_unload(Window *window) {
 	//  gbitmap_destroy(s_menu_icon_image);
 }
 
-void TreMenu()
+void TravelTimeMenu(const char *title)
 {
+  strncpy(Title, title,sizeof(Title));
+  s_nSunday = persist_read_int(skTravelTimeSunday);
+  snprintf(sundaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSunday);
+  s_nWeekday = persist_read_int(skTravelTimeWeekDay);
+  snprintf(weekdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nWeekday);
+  s_nSaturdayday = persist_read_int(skTravelTimeSaturday);
+  snprintf(saturdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSaturdayday);
+  
 	s_main_window = window_create();
 	window_set_window_handlers(s_main_window, (WindowHandlers) {
 		.load = main_window_load,
@@ -75,5 +83,3 @@ void TreMenu()
 	});
 	window_stack_push(s_main_window, true);
 }
-
-

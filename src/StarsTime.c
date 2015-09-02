@@ -3,7 +3,7 @@
 #include "pebble.h"
 #include "StarsTime.h"
 #include "Schedule.h"
-#include "SettingsMenu.h"
+#include "tre_menu.h"
 
 static Window *window;
 static Layer *s_simple_bg_layer, *s_date_layer, *s_hands_layer;
@@ -21,8 +21,6 @@ static char s_Road_buffer[4];
 static GPath *Star[4];
 static GPath *HiLites[6];
 static void ShowGameInfo();
-
-void TreMenu();
 
 static void bg_update_proc(Layer *layer, GContext *ctx) 
 {
