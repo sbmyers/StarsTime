@@ -79,14 +79,14 @@ static void hilite_update(struct Layer *layer, GContext *ctx)
 static void AppTimerProc(void *pData)
 {
   if(s_bHiLite){
-    s_HiLiteColor = GColorDarkGray;
+    s_HiLiteColor = GColorWhite;
   } 
   else{
     s_HiLiteColor = GColorLightGray;
   }
   s_bHiLite = !s_bHiLite;
   layer_mark_dirty(s_hilite);
-  app_timer_reschedule(s_AppTimer, 500);
+  s_AppTimer = app_timer_register(500, AppTimerProc, NULL);
 }
 static void initialise_ui(void) {
   s_window = window_create();
