@@ -12,6 +12,10 @@ static TextLayer *s_textlayer_time;
 static TextLayer *s_textlayer_desc;
 static TextLayer *s_textlayer_destination;
 
+static char s_Destination[4];
+static char s_Station[16];
+static char s_DayOfWeek[10];
+
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
@@ -22,14 +26,14 @@ static void initialise_ui(void) {
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_res_bitham_30_black = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
   // s_textlayer_title
-  s_textlayer_title = text_layer_create(GRect(20, 0, 100, 20));
-  text_layer_set_text(s_textlayer_title, "Text layer");
+  s_textlayer_title = text_layer_create(GRect(0, 0, 144, 20));
+  text_layer_set_text(s_textlayer_title, s_Destination);
   text_layer_set_text_alignment(s_textlayer_title, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_title);
   
   // s_textlayer_subtitle
-  s_textlayer_subtitle = text_layer_create(GRect(20, 20, 100, 20));
-  text_layer_set_text(s_textlayer_subtitle, "Text layer");
+  s_textlayer_subtitle = text_layer_create(GRect(0, 20, 144, 20));
+  text_layer_set_text(s_textlayer_subtitle, s_DayOfWeek);
   text_layer_set_text_alignment(s_textlayer_subtitle, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_subtitle);
   
@@ -49,7 +53,7 @@ static void initialise_ui(void) {
   
   // s_textlayer_destination
   s_textlayer_destination = text_layer_create(GRect(26, 135, 100, 30));
-  text_layer_set_text(s_textlayer_destination, "AAC");
+  text_layer_set_text(s_textlayer_destination,s_Station);
   text_layer_set_text_alignment(s_textlayer_destination, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_destination, s_res_bitham_30_black);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_destination);
@@ -68,8 +72,11 @@ static void destroy_ui(void) {
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
-
-void show_adjust_time(void) {
+void show_adjust_time(const char *destination, const char *dayofweek, const char * station)
+{
+  strncpy(s_Destination, destination,sizeof(s_Destination));
+  strncpy(s_Station, station,sizeof(s_Station));
+  strncpy(s_DayOfWeek, dayofweek,sizeof(s_DayOfWeek));
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,

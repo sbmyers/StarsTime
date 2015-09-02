@@ -1,5 +1,6 @@
 #include "pebble.h"
 #include "StarsTime.h"
+#include "adjust_time.h"
 
 #define NUM_MENU_SECTIONS 1
   
@@ -20,6 +21,7 @@ static SimpleMenuSection s_menu_sections[NUM_MENU_SECTIONS];
 static char sundaySubTitle[30];
 static char weekdaySubTitle[30];
 static char saturdaySubTitle[30];
+
 static SimpleMenuItem s_first_menu_items[] = {
 	{ "Sundays", sundaySubTitle, NULL, menu_select_callback },    // 0
 	{ "Weekday", weekdaySubTitle, NULL, menu_select_callback },    // 1
@@ -28,15 +30,21 @@ static SimpleMenuItem s_first_menu_items[] = {
 static const int numMenuItems = (sizeof(s_first_menu_items) / sizeof(s_first_menu_items[0]));
 static char Title[30];
 //static GBitmap *s_menu_icon_image;
-static void SetSubTitles()
-{
- 
-}
+void show_adjust_time(const char *destination, const char *station, const char *dayofweek);
 static void menu_select_callback(int index, void *ctx) {
   nStation = index;
   persist_write_int(skStation, nStation);
-  SetSubTitles();
-  //ShowTimeSelect(s_first_menu_items[nStation].title, 0, skSpare);
+  switch(index){
+    case 0:  // Sunday
+      show_adjust_time("", "Sundays", "AAC");
+    break;
+    case 1:  // Weekday
+      show_adjust_time("TRE", "Weekdays", Title);
+    break;
+    case 2:  // Saturday
+      show_adjust_time("TRE", "Saturdays", Title);
+    break;
+  }
 	layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
 }
 
@@ -44,7 +52,6 @@ static void main_window_load(Window *window) {
 	//  s_menu_icon_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENU_ICON_1);
 
   nStation = persist_read_int(skStation);
-  SetSubTitles();
 
 	s_menu_sections[0] = (SimpleMenuSection) {
 		.num_items = numMenuItems,
