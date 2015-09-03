@@ -2,10 +2,6 @@
 
 #include "pebble.h"
   
-enum{Sunday5, Sunday1st=Sunday5, Sunday7,
-     WeekDay730, 
-     Saturday2, Saturday1st=Saturday2, Saturday3, Saturday6, Saturday7, Saturday8,};
-
 typedef struct{
   time_t start;
   char *visitor;
@@ -14,3 +10,5 @@ typedef struct{
 
 bool IsToday();
 GameInfo *FindGameTime();
+
+void SetGameAlarm(struct tm *gameTime, time_t startTime, int32_t nGame);

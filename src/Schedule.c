@@ -106,6 +106,7 @@ GameInfo *FindGameTime()
     nGame++;
   }
 	struct tm *startTime = gmtime(&Schedule1516[nGame].start);
+  SetGameAlarm(startTime, Schedule1516[nGame].start, nGame);
   if((startTime->tm_mon == currentTime->tm_mon) && (startTime->tm_mday == currentTime->tm_mday)){
     bToday = true;
   }
@@ -115,4 +116,59 @@ GameInfo *FindGameTime()
 bool IsToday()
 {
   return bToday;
+}
+static WakeupId wakeme;
+static char s_StationStops[] = {
+  4,	// T&P Station
+  10,	// Ft. Worth Intermodal Center
+  6,	// Richland Hills
+  8,	// Bell
+  5,	// CentrePort/ DFW Airport
+  6,	// West Irving
+  8,	// Downtown Irving/Heritage Crossing
+  5,	// Medical/Market Center
+};
+
+static short s_SaturdayTrains[]={
+  1242,  // 12:42
+  1442,  // 2:42
+  1612,  // 4:12
+  1812,  // 6:12
+  1912,  // 7:12
+};
+static short s_WeekDayTrains[] = {
+  1904,  // 7:04
+};
+static void DoGameAlarm(WakeupId wakeup_id, int32_t cookie)
+{
+  // do a double vibrate
+  // add the game window
+}
+void SetGameAlarm(struct tm *gameTime, time_t startTime, int32_t nGame)
+{
+  // make sure there are no pending wakeups
+  wakeup_cancel_all();
+  wakeup_service_subscribe(DoGameAlarm); 
+  
+  time_t when = startTime;
+  switch(gameTime->tm_wday){
+    case 0:  // Sunday, just use start time
+    break;
+    case 6:  // Saturday, search the train schedule
+      when -= s_SaturdayTrains[0];
+      // backup based on station stop
+    break;
+    default:  // Weekday schedule
+      when -= s_WeekDayTrains[0];
+    break;
+  }
+
+wakeme = wakeup_schedule(when, nGame, false);
+  
+  int x =  s_StationStops[0];
+  x = s_SaturdayTrains[0];
+  x = s_WeekDayTrains[0];
+  if(!x){
+    bToday = false;
+  }
 }
