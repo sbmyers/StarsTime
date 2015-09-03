@@ -8,7 +8,7 @@ static int nStation = 0;
 static void menu_select_callback(int index, void *ctx);
 static int s_nSunday = 0;
 static int s_nWeekday = 0;
-static int s_nSaturdayday = 0;
+static int s_nSaturday = 0;
   
 typedef struct {
 	char *title;
@@ -72,13 +72,22 @@ static void main_window_unload(Window *window) {
 	simple_menu_layer_destroy(s_simple_menu_layer);
 	//  gbitmap_destroy(s_menu_icon_image);
 }
+static void tostring(char *bfr, size_t nBfrSize,  int nMinutes)
+{
+  if(nMinutes > 60){
+    snprintf(bfr, nBfrSize, "%d:%2.2d",nMinutes/100, nMinutes % 100);
+  }
+  else{
+     snprintf(bfr,nBfrSize,"%d minutes", nMinutes);   
+  }
+}
 static void main_window_appear(Window *window){
   s_nSunday = persist_read_int(skTravelTimeSunday);
-  snprintf(sundaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSunday);
+  tostring(sundaySubTitle, sizeof(sundaySubTitle), s_nSunday);
   s_nWeekday = persist_read_int(skTravelTimeWeekDay);
-  snprintf(weekdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nWeekday);
-  s_nSaturdayday = persist_read_int(skTravelTimeSaturday);
-  snprintf(saturdaySubTitle, sizeof(sundaySubTitle),"%d minutes", s_nSaturdayday);
+  tostring(weekdaySubTitle, sizeof(weekdaySubTitle), s_nWeekday);
+  s_nSaturday = persist_read_int(skTravelTimeSaturday);
+  tostring(saturdaySubTitle, sizeof(saturdaySubTitle), s_nSaturday);
 }
 void TravelTimeMenu(const char *title)
 {
