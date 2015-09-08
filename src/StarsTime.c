@@ -116,18 +116,14 @@ static void date_update_proc(Layer *layer, GContext *ctx)
 
 static void handle_second_tick(struct tm *tick_time, TimeUnits units_changed)
 {
-#if 0
-  layer_mark_dirty(window_get_root_layer(window));
-#else
   if (units_changed & DAY_UNIT) {
-    layer_mark_dirty(text_layer_get_layer(s_date_layer));
+    layer_mark_dirty(s_date_layer);
     layer_mark_dirty(text_layer_get_layer(s_num_label));
     layer_mark_dirty(text_layer_get_layer(s_OpponentLabel));
     layer_mark_dirty(text_layer_get_layer(s_GameTimeLabel));
     layer_mark_dirty(text_layer_get_layer(s_RoadLabel));
   }
   layer_mark_dirty(s_hands_layer);
-#endif
 }
 
 static void window_load(Window *window)
