@@ -4,6 +4,7 @@
 #include "StarsTime.h"
 #include "Schedule.h"
 #include "tre_menu.h"
+#include "game_info.h"
 
 static Window *window;
 static Layer *s_simple_bg_layer, *s_date_layer, *s_hands_layer;
@@ -197,13 +198,16 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
 #endif
   //Window *window = (Window *)context;
 }
-
+static void up_single_click_handler(ClickRecognizerRef recognizer, void *context)
+{
+  show_game_info();
+}
 static void config_provider(Window *window)
 {
   // single click / repeat-on-hold config:
   window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
   //  window_single_repeating_click_subscribe(BUTTON_ID_SELECT, 1000, select_single_click_handler);
-
+  window_single_click_subscribe(BUTTON_ID_UP, up_single_click_handler);
     // multi click config:
   //  window_multi_click_subscribe(BUTTON_ID_SELECT, 2, 10, 0, true, select_multi_click_handler);
 

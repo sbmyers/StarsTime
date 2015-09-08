@@ -1,5 +1,8 @@
 #include <pebble.h>
 #include "Schedule.h"
+#include "game_info.h"
+  
+static bool bSetAlarm = true;
 
 static GameInfo Schedule1516[] = {
     {1442946600,"DAL","FLA"},	// DAL at FLA Sep 22, 2015 6:30
@@ -142,6 +145,7 @@ static short s_WeekDayTrains[] = {
 static void DoGameAlarm(WakeupId wakeup_id, int32_t cookie)
 {
   // do a double vibrate
+  show_game_info();
   // add the game window
 }
 void SetGameAlarm(struct tm *gameTime, time_t startTime, int32_t nGame)
@@ -162,8 +166,13 @@ void SetGameAlarm(struct tm *gameTime, time_t startTime, int32_t nGame)
       when -= s_WeekDayTrains[0];
       break;
   }
+  if(bSetAlarm){
+    bSetAlarm = false;
+    when = time(NULL);
+    when += 15;
+    wakeme = wakeup_schedule(when, nGame, false);
+  }
 
-  wakeme = wakeup_schedule(when, nGame, false);
 
   int x = s_StationStops[0];
   if (!x) {
