@@ -47,7 +47,7 @@ static const GPathInfo MINUTE_HAND_POINTS = {
 
 static const GPathInfo HOUR_HAND_POINTS = {
     3, (GPoint[]){
-        {-6, 20}, { 6, 20 }, { 0, -60 }
+        {-6, 20}, { 6, 20 }, { 0, -50 }
     } };
 static const GPathInfo FillGray = {
     .num_points = 22,

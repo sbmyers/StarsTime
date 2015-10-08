@@ -9,8 +9,11 @@
     "resources": {
         "media": [
             {
-                "file": "images/StarsBW.png",
+                "file": "images/StarsC.png",
                 "name": "STARS_ICON",
+                "targetPlatforms": [
+                    "basalt"
+                ],
                 "type": "png"
             }
         ]
